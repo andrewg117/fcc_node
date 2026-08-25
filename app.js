@@ -1,11 +1,11 @@
 import express from 'express';
-import serverRoutes from './src/serverRoutes.js'
+import path from 'path';
+import serverRoutes from './routes/serverRoutes.js';
 
 const app = express();
-const PORT = 3000
 
 
-app.use("/server", (req, res, next) => {
+app.use((req, res, next) => {
     console.log(`Server request called ${req.method} to ${req.originalUrl}`)
     next();
 });
@@ -13,13 +13,7 @@ app.use("/server", (req, res, next) => {
 app.use("/server", serverRoutes);
 
 app.use((req, res, next) => {
-  // Create a 404 Error object
-  const error = new Error(`Cannot ${req.method} ${req.originalUrl}`);
-  error.statusCode = 404;
-  error.name = "NotFoundError";
-
-  // Pass it to the global error handler
-  next(error); 
+  res.status(404).sendFile(path.join(import.meta.dirname, "views", "RouteNotFound.html"));
 });
 
 app.use((err, req, res, next) => {
@@ -35,6 +29,4 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`\n Server running on port: ${PORT}`)
-});
+export default app;
