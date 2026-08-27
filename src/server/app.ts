@@ -1,22 +1,22 @@
-import express from 'express';
+import express, { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
 import path from 'path';
 import serverRoutes from './routes/serverRoutes.js';
 
 const app = express();
 
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
     console.log(`Server request called ${req.method} to ${req.originalUrl}`)
     next();
 });
 
 app.use("/server", serverRoutes);
 
-app.use((req, res, next) => {
-  res.status(404).sendFile(path.join(import.meta.dirname, "views", "RouteNotFound.html"));
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.status(404).sendFile(path.join(import.meta.dirname, "views", "RouteNotFound.html"));
 });
 
-app.use((err, req, res, next) => {
+app.use(((err, req: Request, res: Response, next: NextFunction) => {
 
     // Determine the HTTP status code (default to 500 Server Error)
     const statusCode = err.statusCode || 500;
@@ -27,6 +27,6 @@ app.use((err, req, res, next) => {
         "type": err.name,
         message: err.message || "Internal Server Error",
     });
-});
+}) as ErrorRequestHandler);
 
 export default app;

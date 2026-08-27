@@ -1,19 +1,19 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
+import HttpTypeError from '../config/errorTypes';
 
 const routes = express.Router();
 
-routes.get("/", (req, res) => {
+routes.get("/", (req: Request, res: Response) => {
     res.status(200).send("Server home\n");
 });
 
-routes.get("/user/:id", (req, res, next) => {
+routes.get("/user/:id", (req: Request, res: Response, next: NextFunction) => {
     console.log(`Searching for User: ${req.params.id}`)
     const userID = Number(req.params.id);
     
 
     if (isNaN(userID)) {
-        let numError = new TypeError("Id given is not a number");
-        numError.statusCode = 404;
+        let numError = new HttpTypeError("Id given is not a number", 404);
         return next(numError);
     }
 

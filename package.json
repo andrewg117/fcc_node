@@ -8,10 +8,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "node server.js",
-    "devServer": "node --watch server.js"
+    "build": "rm -rf ./dist && tsc",
+    "server": "node server/app.js",
+    "devServer": "tsx --watch src/server.ts"
   },
   "dependencies": {
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "tsx": "^4.23.12"
   }
 }
