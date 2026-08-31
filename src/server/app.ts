@@ -12,11 +12,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use("/server", serverRoutes);
 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, res: Response) => {
     res.status(404).sendFile(path.join(import.meta.dirname, "views", "RouteNotFound.html"));
 });
 
-app.use(((err, req: Request, res: Response, next: NextFunction) => {
+app.use(((err, req: Request, res: Response, _next: NextFunction) => {
 
     // Determine the HTTP status code (default to 500 Server Error)
     const statusCode = err.statusCode || 500;

@@ -1,4 +1,5 @@
 node_modules
+.gitignore
 
 # Logs
 logs
@@ -21,3 +22,6 @@ coverage
 .DS_Store
 *.swp
 .vscode/
+CLAUDE.md
+.claude
+claude_plans

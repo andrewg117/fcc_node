@@ -7,16 +7,21 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -rf ./dist && tsc",
-    "server": "node server/app.js",
+    "test": "node --import tsx --test test/app.test.ts 2>&1",
+    "lint": "eslint .",
+    "build": "rm -rf ./dist && tsc && rsync -a --exclude='*.ts' src/ dist/",
+    "server": "node dist/server.js",
     "devServer": "tsx --watch src/server.ts"
   },
   "dependencies": {
     "express": "^5.2.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.6",
-    "tsx": "^4.23.12"
+    "eslint": "^10.9.1",
+    "globals": "^17.11.0",
+    "tsx": "^4.23.12",
+    "typescript-eslint": "^8.68.0"
   }
 }

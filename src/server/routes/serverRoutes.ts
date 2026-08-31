@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import HttpTypeError from '../config/errorTypes';
+import HttpTypeError from '../config/errorTypes.ts';
 
 const routes = express.Router();
 
@@ -13,7 +13,7 @@ routes.get("/user/:id", (req: Request, res: Response, next: NextFunction) => {
     
 
     if (isNaN(userID)) {
-        let numError = new HttpTypeError("Id given is not a number", 404);
+        const numError = new HttpTypeError("Id given is not a number", 404);
         return next(numError);
     }
 
