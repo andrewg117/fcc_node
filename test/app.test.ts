@@ -1,7 +1,7 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import type { AddressInfo } from "node:net";
-import app from "../src/server/app.ts";
+import app from "../api/server/app.ts";
 
 let baseUrl: string;
 const server = app.listen(0);

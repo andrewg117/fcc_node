@@ -4,6 +4,8 @@ import serverRoutes from './routes/serverRoutes.js';
 
 const app = express();
 
+const clientDist = path.join(import.meta.dirname, "..", "..", "client", "dist");
+app.use(express.static(clientDist));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     console.log(`Server request called ${req.method} to ${req.originalUrl}`)
@@ -11,6 +13,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use("/server", serverRoutes);
+
+app.get("/*splat", (req, res, next) => {
+    if (req.path.startsWith("/server")) return next(); // let unmatched API routes fall through to the JSON 404 below
+    res.sendFile(path.join(clientDist, "index.html"));  // SPA client-side routing fallback
+});
 
 app.use((req: Request, res: Response) => {
     res.status(404).sendFile(path.join(import.meta.dirname, "views", "RouteNotFound.html"));

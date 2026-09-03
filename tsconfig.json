@@ -4,12 +4,12 @@
     "skipLibCheck": true,
     "rewriteRelativeImportExtensions": true,
     "allowImportingTsExtensions": true,
-    "rootDir": "./src",
+    "rootDir": "./api",
     "outDir": "./dist",
     "sourceMap": true
   },
   "include": [
-    "src/**/*"
+    "api/**/*"
   ],
   "exclude": [
     "node_modules",

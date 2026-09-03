@@ -9,9 +9,11 @@
   "scripts": {
     "test": "node --import tsx --test test/app.test.ts",
     "lint": "eslint .",
-    "build": "rm -rf ./dist && tsc && rsync -a --exclude='*.ts' src/ dist/",
+    "build": "rm -rf ./dist && tsc && rsync -a --exclude='*.ts' api/ dist/ && cd client/ && npm run build",
     "server": "node dist/server.js",
-    "devServer": "tsx --watch src/server.ts"
+    "devClient": "cd client/ && npm run dev",
+    "devServer": "tsx --watch api/server.ts",
+    "devRun": "concurrently \"npm run devServer\" \"npm run devClient\""
   },
   "dependencies": {
     "express": "^5.2.1"
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.6",
+    "concurrently": "^10.0.5",
     "eslint": "^10.9.1",
     "globals": "^17.11.0",
     "tsx": "^4.23.12",
