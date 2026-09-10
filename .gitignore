@@ -18,6 +18,15 @@ pnpm-debug.log*
 dist
 coverage
 
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
 # OS and editor files
 .DS_Store
 *.swp
