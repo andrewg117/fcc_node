@@ -7,12 +7,12 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "node --import tsx --test test/app.test.ts",
-    "lint": "eslint .",
-    "build": "rm -rf ./dist && tsc && rsync -a --exclude='*.ts' api/ dist/ && cd client/ && npm run build",
-    "server": "node dist/server.js",
+    "test": "cd backend && uv run pytest",
+    "lint": "cd backend && uv run ruff check . && cd ../client && npm run lint",
+    "build": "cd client/ && npm run build",
+    "server": "cd backend && ENVIRONMENT=production uv run main.py",
+    "devServer": "cd backend && uv run main.py",
     "devClient": "cd client/ && npm run dev",
-    "devServer": "tsx --watch api/server.ts",
     "devRun": "concurrently \"npm run devServer\" \"npm run devClient\""
   },
   "dependencies": {
