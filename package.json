@@ -15,16 +15,7 @@
     "devClient": "cd client/ && npm run dev",
     "devRun": "concurrently \"npm run devServer\" \"npm run devClient\""
   },
-  "dependencies": {
-    "express": "^5.2.1"
-  },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/express": "^5.0.6",
-    "concurrently": "^10.0.5",
-    "eslint": "^10.9.1",
-    "globals": "^17.11.0",
-    "tsx": "^4.23.12",
-    "typescript-eslint": "^8.68.0"
+    "concurrently": "^10.0.5"
   }
 }
