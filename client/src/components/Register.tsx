@@ -1,5 +1,7 @@
 import { useState, useEffect, type SubmitEventHandler, type ChangeEventHandler } from 'react';
-import { useCreateUserMutation } from '../features/server/serverApi';
+import { useNavigate } from 'react-router-dom';
+
+import { useRegisterMutation } from '../features/auth/authApi';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -8,7 +10,9 @@ function Register() {
     password: '',
     passwordConfirm: ''
   });
-  const [createUser, { isLoading, error }] = useCreateUserMutation();
+  const [passwordError, setPasswordError] = useState('');
+  const [register, { isLoading, error }] = useRegisterMutation();
+  const navigate = useNavigate();
 
   const handleFormChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const { name, value } = e.target;
@@ -17,16 +21,25 @@ function Register() {
       ...prevData,
       [name]: value
     }));
-  }
+  };
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    // Send formData
-    await createUser(formData);
-  }
+    if (formData.password !== formData.passwordConfirm) {
+      setPasswordError('Passwords do not match');
+      return;
+    }
+    setPasswordError('');
+    try {
+      await register(formData).unwrap();
+      navigate('/sign-in');
+    } catch {
+      // error state is already available via `error` from useRegisterMutation()
+    }
+  };
 
   useEffect(() => {
-    if (error){
+    if (error) {
       console.log(error); // TODO: create function to access fields
     }
   }, [error]);
@@ -44,15 +57,16 @@ function Register() {
           <input name="email" type="text" onChange={handleFormChange} />
         </label>
         <label>
-          Email:
-          <input name="password" type="text" onChange={handleFormChange} />
+          Password:
+          <input name="password" type="password" onChange={handleFormChange} />
         </label>
         <label>
-          Email:
-          <input name="passwordConfirm" type="text" onChange={handleFormChange} />
+          Confirm Password:
+          <input name="passwordConfirm" type="password" onChange={handleFormChange} />
         </label>
-        { isLoading && <p>Creating User...</p>}
+        {isLoading && <p>Creating User...</p>}
         <button type="submit" disabled={isLoading}>Create User</button>
+        {passwordError && <p>{passwordError}</p>}
         {error && <p>Enter name and email</p>}
       </form>
     </>
