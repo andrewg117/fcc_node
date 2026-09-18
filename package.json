@@ -10,8 +10,8 @@
     "test": "cd backend && uv run pytest",
     "lint": "cd backend && uv run ruff check . && cd ../client && npm run lint",
     "build": "cd client/ && npm run build",
-    "server": "cd backend && ENVIRONMENT=production uv run main.py",
-    "devServer": "cd backend && uv run main.py",
+    "server": "cd backend && ENVIRONMENT=production uv run backend",
+    "devServer": "cd backend && uv run backend",
     "devClient": "cd client/ && npm run dev",
     "devRun": "concurrently \"npm run devServer\" \"npm run devClient\""
   },

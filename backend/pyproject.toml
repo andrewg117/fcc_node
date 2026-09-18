@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-backend = "backend:main"
+backend = "backend.main:run"
 
 [build-system]
 requires = ["uv_build>=0.12.12,<0.13.0"]

@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 
-from core.exceptions import HttpError
+from backend.core.exceptions import HttpError
 
 router = APIRouter(prefix="/server")
 

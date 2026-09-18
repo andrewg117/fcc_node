@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from api.routes.server import router as server_router
-from core.exceptions import HttpError
+from backend.api.routes.server_routes import router as server_router
+from backend.core.exceptions import HttpError
 
 environment: str = os.getenv("ENVIRONMENT") or "development"
 
@@ -30,12 +30,10 @@ async def http_error_handler(request: Request, exc: HttpError):
 
 app.include_router(server_router)
 
-if __name__ == "__main__":
+def run() -> None:
     port: str = os.getenv("SERVER_PORT") or "8001"
 
     if environment == "development":
-        uvicorn.run("main:app", port=int(port), reload=True)
+        uvicorn.run("backend.main:app", port=int(port), reload=True)
     else:
-        uvicorn.run("main:app", port=int(port))
-
-
+        uvicorn.run("backend.main:app", port=int(port))
