@@ -5,8 +5,7 @@ from functools import lru_cache
 
 @dataclass(frozen=True)
 class Settings:
-    mongodb_uri: str
-    mongodb_db_name: str
+    database_url: str
     jwt_secret: str
     jwt_algorithm: str
     access_token_expire_minutes: int
@@ -26,8 +25,7 @@ def get_settings() -> Settings:
         raise RuntimeError("JWT_SECRET must be at least 32 characters long")
 
     return Settings(
-        mongodb_uri=_require("MONGODB_URI"),
-        mongodb_db_name=os.getenv("MONGODB_DB_NAME") or "fcc_node",
+        database_url=_require("DATABASE_URL"),
         jwt_secret=jwt_secret,
         jwt_algorithm="HS256",
         access_token_expire_minutes=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES") or "60"),
