@@ -14,7 +14,7 @@ from backend.repositories.user_repository import UserRecord, UserRepository
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
-async def get_db_session(request: Request) -> AsyncGenerator[AsyncSession, None]:
+async def get_db_session(request: Request) -> AsyncGenerator[AsyncSession]:
     async with request.app.state.session_factory() as session:
         yield session
 
