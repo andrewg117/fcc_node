@@ -2,8 +2,10 @@
 
 Skipped unless DATABASE_TEST_URL is set, e.g.
     DATABASE_TEST_URL=postgresql+asyncpg://... uv run pytest
-Creates the users table before the test and drops it afterwards, so
-DATABASE_TEST_URL must point at a throwaway database, never a real one.
+Every table is redirected from the fcc_node schema to fcc_node_test, which
+is created before the test, and its tables are dropped afterwards. So
+DATABASE_TEST_URL may point at the same database as DATABASE_URL without
+touching the real fcc_node.users table.
 """
 
 import asyncio
@@ -20,15 +22,22 @@ pytestmark = pytest.mark.skipif(
     not os.getenv("DATABASE_TEST_URL"), reason="DATABASE_TEST_URL is not set"
 )
 
+TEST_SCHEMA = "fcc_node_test"
+
 
 def test_repository_round_trip_against_postgres():
     async def scenario() -> None:
-        engine = create_async_engine(os.environ["DATABASE_TEST_URL"])
+        engine = create_async_engine(
+            os.environ["DATABASE_TEST_URL"],
+            # Every "fcc_node" table becomes "fcc_node_test", for DDL and queries alike.
+            # Without this, drop_all below would delete the real fcc_node.users table.
+            execution_options={"schema_translate_map": {"fcc_node": TEST_SCHEMA}},
+        )
         session_factory = async_sessionmaker(engine, expire_on_commit=False)
         try:
             async with engine.begin() as conn:
-                # A fresh database has no fcc_node schema, and create_all won't make one.
-                await conn.execute(text("CREATE SCHEMA IF NOT EXISTS fcc_node"))
+                # create_all won't make the schema, and raw text() isn't translated.
+                await conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {TEST_SCHEMA}"))
                 await conn.run_sync(Base.metadata.create_all)
 
             async with session_factory() as session:
@@ -43,6 +52,15 @@ def test_repository_round_trip_against_postgres():
                 users = UserRepository(session)
                 with pytest.raises(DuplicateEmailError):
                     await users.create("Other", "andrew@example.com", "hash")
+
+            async with session_factory() as session:
+                users = UserRepository(session)
+                await users.delete_by_id(created.id)
+
+            async with session_factory() as session:
+                users = UserRepository(session)
+                assert await users.get_by_id(created.id) is None
+                assert await users.get_by_email("andrew@example.com") is None
         finally:
             async with engine.begin() as conn:
                 await conn.run_sync(Base.metadata.drop_all)

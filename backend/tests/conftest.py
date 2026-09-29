@@ -1,3 +1,5 @@
+import itertools
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -12,12 +14,14 @@ class FakeUserRepository:
 
     def __init__(self) -> None:
         self.users: dict[str, UserRecord] = {}
+        # A counter, not len(self.users) + 1, so ids never repeat after a delete.
+        self._ids = itertools.count(1)
 
     async def create(self, name: str, email: str, password_hash: str) -> UserRecord:
         if any(user.email == email for user in self.users.values()):
             raise DuplicateEmailError(email)
         user = UserRecord(
-            id=str(len(self.users) + 1),
+            id=str(next(self._ids)),
             name=name,
             email=email,
             password_hash=password_hash,
@@ -30,6 +34,9 @@ class FakeUserRepository:
 
     async def get_by_id(self, user_id: str) -> UserRecord | None:
         return self.users.get(user_id)
+
+    async def delete_by_id(self, user_id: str) -> None:
+        self.users.pop(user_id, None)
 
 
 @pytest.fixture(autouse=True)

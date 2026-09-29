@@ -8,7 +8,7 @@ function Home() {
   return user ? (
     <>
       <p>Signed in as {user.name} ({user.email})</p>
-      <button onClick={() => dispatch(logout())}>Log Out</button>
+      <button className='button' onClick={() => dispatch(logout())}>Log Out</button>
     </>
   ) : (
     <p>Not signed in.</p>

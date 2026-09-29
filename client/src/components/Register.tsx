@@ -65,7 +65,7 @@ function Register() {
           <input name="passwordConfirm" type="password" onChange={handleFormChange} />
         </label>
         {isLoading && <p>Creating User...</p>}
-        <button type="submit" disabled={isLoading}>Create User</button>
+        <button className='button' type="submit" disabled={isLoading}>Create User</button>
         {passwordError && <p>{passwordError}</p>}
         {error && <p>Enter name and email</p>}
       </form>

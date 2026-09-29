@@ -1,7 +1,7 @@
 import uuid
 from dataclasses import dataclass
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -50,3 +50,7 @@ class UserRepository:
             return None
         model = await self._session.get(UserModel, user_uuid)
         return _to_record(model) if model else None
+
+    async def delete_by_id(self, user_id: str) ->  None:
+        await self._session.execute(delete(UserModel).where(UserModel.id == uuid.UUID(user_id)))
+        await self._session.commit()

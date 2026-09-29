@@ -161,3 +161,46 @@ def test_me_for_deleted_user_returns_401(client, fake_users):
 def test_token_for_unknown_user_id_is_rejected(client):
     token = create_access_token("does-not-exist")
     assert client.get("/auth/me", headers=auth_header(token)).status_code == 401
+
+
+# --- /auth/deregister -------------------------------------------------------
+
+
+def test_deregister_deletes_current_user(client, fake_users):
+    register(client)
+    token = login(client).json()["token"]
+    res = client.delete("/auth/deregister", headers=auth_header(token))
+    assert res.status_code == 204
+    assert res.content == b""
+    assert fake_users.users == {}
+
+
+def test_deregister_invalidates_token_and_login(client):
+    register(client)
+    token = login(client).json()["token"]
+    client.delete("/auth/deregister", headers=auth_header(token))
+    assert client.get("/auth/me", headers=auth_header(token)).status_code == 401
+    assert login(client).status_code == 401
+
+
+def test_deregister_only_deletes_own_account(client, fake_users):
+    register(client)
+    register(client, email="other@example.com")
+    token = login(client, email="other@example.com").json()["token"]
+    assert client.delete("/auth/deregister", headers=auth_header(token)).status_code == 204
+    assert [user.email for user in fake_users.users.values()] == ["andrew@example.com"]
+
+
+def test_deregister_without_token_returns_401(client, fake_users):
+    register(client)
+    res = client.delete("/auth/deregister")
+    assert res.status_code == 401
+    assert res.json() == {"code": 401, "type": "HttpError", "message": "Not authenticated"}
+    assert len(fake_users.users) == 1
+
+
+def test_email_can_register_again_after_deregister(client):
+    register(client)
+    token = login(client).json()["token"]
+    client.delete("/auth/deregister", headers=auth_header(token))
+    assert register(client).status_code == 201

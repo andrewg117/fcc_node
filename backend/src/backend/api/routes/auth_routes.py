@@ -48,3 +48,8 @@ async def login_user(body: LoginRequest, users: UserRepo) -> LoginResponse:
 @router.get("/me")
 async def read_current_user(user: CurrentUser) -> UserPublic:
     return UserPublic(name=user.name, email=user.email)
+
+
+@router.delete("/deregister", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_current_user(user: CurrentUser, users: UserRepo) -> None:
+    await users.delete_by_id(user.id)

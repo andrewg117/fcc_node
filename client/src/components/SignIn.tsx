@@ -35,7 +35,7 @@ function SignIn() {
       <label>Email: <input name="email" type="text" onChange={handleFormChange} /></label>
       <label>Password: <input name="password" type="password" onChange={handleFormChange} /></label>
       {isLoading && <p>Signing in...</p>}
-      <button type="submit" disabled={isLoading}>Sign In</button>
+      <button className='button' type="submit" disabled={isLoading}>Sign In</button>
       {error && <p>Invalid email or password</p>}
     </form>
   );
