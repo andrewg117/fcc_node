@@ -1,8 +1,9 @@
-import { useState, useEffect, type SubmitEventHandler, type ChangeEventHandler } from 'react';
+import { useState, type SubmitEventHandler, type ChangeEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../features/auth/authApi';
 import { useAppDispatch } from '../app/hooks';
 import { setCredentials } from '../features/auth/authSlice';
+import { getErrorMessage } from '../app/getErrorMessage';
 
 function SignIn() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -26,17 +27,13 @@ function SignIn() {
     }
   };
 
-  useEffect(() => {
-    if (error) console.log(error); // TODO: surface a real error message field
-  }, [error]);
-
   return (
     <form onSubmit={handleSubmit}>
       <label>Email: <input name="email" type="text" onChange={handleFormChange} /></label>
       <label>Password: <input name="password" type="password" onChange={handleFormChange} /></label>
       {isLoading && <p>Signing in...</p>}
       <button className='button' type="submit" disabled={isLoading}>Sign In</button>
-      {error && <p>Invalid email or password</p>}
+      {error && <p>{getErrorMessage(error)}</p>}
     </form>
   );
 }

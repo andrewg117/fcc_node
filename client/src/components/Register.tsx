@@ -1,7 +1,8 @@
-import { useState, useEffect, type SubmitEventHandler, type ChangeEventHandler } from 'react';
+import { useState, type SubmitEventHandler, type ChangeEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useRegisterMutation } from '../features/auth/authApi';
+import { getErrorMessage } from '../app/getErrorMessage';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -31,19 +32,16 @@ function Register() {
     }
     setPasswordError('');
     try {
-      await register(formData).unwrap();
+      await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      }).unwrap();
       navigate('/sign-in');
     } catch {
       // error state is already available via `error` from useRegisterMutation()
     }
   };
-
-  useEffect(() => {
-    if (error) {
-      console.log(error); // TODO: create function to access fields
-    }
-  }, [error]);
-
 
   return (
     <>
@@ -67,7 +65,7 @@ function Register() {
         {isLoading && <p>Creating User...</p>}
         <button className='button' type="submit" disabled={isLoading}>Create User</button>
         {passwordError && <p>{passwordError}</p>}
-        {error && <p>Enter name and email</p>}
+        {error && <p>{getErrorMessage(error)}</p>}
       </form>
     </>
   );
