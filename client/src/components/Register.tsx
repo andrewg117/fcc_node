@@ -1,5 +1,5 @@
 import { useState, type SubmitEventHandler, type ChangeEventHandler } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useRegisterMutation } from '../features/auth/authApi';
 import { getErrorMessage } from '../app/getErrorMessage';
@@ -44,30 +44,33 @@ function Register() {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input name="name" type="text" onChange={handleFormChange} />
-        </label>
-        <label>
-          Email:
-          <input name="email" type="text" onChange={handleFormChange} />
-        </label>
-        <label>
-          Password:
-          <input name="password" type="password" onChange={handleFormChange} />
-        </label>
-        <label>
-          Confirm Password:
-          <input name="passwordConfirm" type="password" onChange={handleFormChange} />
-        </label>
-        {isLoading && <p>Creating User...</p>}
-        <button className='button' type="submit" disabled={isLoading}>Create User</button>
-        {passwordError && <p>{passwordError}</p>}
-        {error && <p>{getErrorMessage(error)}</p>}
-      </form>
-    </>
+    <form className='card' onSubmit={handleSubmit}>
+      <h1>Create an Account</h1>
+      <label className='field'>
+        Name
+        <input className='input' name="name" type="text" autoComplete="name" onChange={handleFormChange} />
+      </label>
+      <label className='field'>
+        Email
+        <input className='input' name="email" type="text" autoComplete="email" onChange={handleFormChange} />
+      </label>
+      <label className='field'>
+        Password
+        <input className='input' name="password" type="password" autoComplete="new-password" onChange={handleFormChange} />
+      </label>
+      <label className='field'>
+        Confirm Password
+        <input className='input' name="passwordConfirm" type="password" autoComplete="new-password" onChange={handleFormChange} />
+      </label>
+      {passwordError && <p className='form-error' role='alert'>{passwordError}</p>}
+      {error && <p className='form-error' role='alert'>{getErrorMessage(error)}</p>}
+      <button className='button' type="submit" disabled={isLoading}>
+        {isLoading ? 'Creating account...' : 'Create Account'}
+      </button>
+      <p className='form-footer'>
+        Already have an account? <Link to="/sign-in">Sign in</Link>
+      </p>
+    </form>
   );
 }
 

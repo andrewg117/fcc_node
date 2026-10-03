@@ -1,5 +1,5 @@
 import { useState, type SubmitEventHandler, type ChangeEventHandler } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../features/auth/authApi';
 import { useAppDispatch } from '../app/hooks';
 import { setCredentials } from '../features/auth/authSlice';
@@ -28,12 +28,23 @@ function SignIn() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>Email: <input name="email" type="text" onChange={handleFormChange} /></label>
-      <label>Password: <input name="password" type="password" onChange={handleFormChange} /></label>
-      {isLoading && <p>Signing in...</p>}
-      <button className='button' type="submit" disabled={isLoading}>Sign In</button>
-      {error && <p>{getErrorMessage(error)}</p>}
+    <form className='card' onSubmit={handleSubmit}>
+      <h1>Sign In</h1>
+      <label className='field'>
+        Email
+        <input className='input' name="email" type="text" autoComplete="email" onChange={handleFormChange} />
+      </label>
+      <label className='field'>
+        Password
+        <input className='input' name="password" type="password" autoComplete="current-password" onChange={handleFormChange} />
+      </label>
+      {error && <p className='form-error' role='alert'>{getErrorMessage(error)}</p>}
+      <button className='button' type="submit" disabled={isLoading}>
+        {isLoading ? 'Signing in...' : 'Sign In'}
+      </button>
+      <p className='form-footer'>
+        No account yet? <Link to="/register">Register</Link>
+      </p>
     </form>
   );
 }
