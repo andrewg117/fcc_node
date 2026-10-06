@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from backend.api.deps import CurrentUser, UserRepo
+from backend.api.deps import CurrentUser, MediaRepo, Storage, UserRepo
 from backend.core.exceptions import HttpError
 from backend.core.security import create_access_token, hash_password, verify_password
 from backend.repositories.user_repository import DuplicateEmailError
@@ -51,5 +51,9 @@ async def read_current_user(user: CurrentUser) -> UserPublic:
 
 
 @router.delete("/deregister", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_current_user(user: CurrentUser, users: UserRepo) -> None:
+async def delete_current_user(user: CurrentUser, users: UserRepo, media: MediaRepo, storage: Storage) -> None:
+    # Delete the files first. If storage fails, the account is kept and the user can retry.
+    # The media rows go with the user row (ON DELETE CASCADE).
+    items = await media.list_for_user(user.id)
+    await storage.delete([path for item in items for path in (item.image_path, item.song_path)])
     await users.delete_by_id(user.id)

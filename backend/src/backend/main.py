@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 load_dotenv()
 
 from backend.api.routes.auth_routes import router as auth_router
+from backend.api.routes.media_routes import router as media_router
 from backend.api.routes.server_routes import router as server_router
 from backend.core.exceptions import HttpError
 from backend.db.postgres import lifespan
@@ -37,6 +38,7 @@ async def http_error_handler(request: Request, exc: HttpError):
 
 app.include_router(server_router)
 app.include_router(auth_router)
+app.include_router(media_router)
 
 
 def run() -> None:
