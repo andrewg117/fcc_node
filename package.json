@@ -7,21 +7,15 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "node --import tsx --test test/app.test.ts 2>&1",
-    "lint": "eslint .",
-    "build": "rm -rf ./dist && tsc && rsync -a --exclude='*.ts' src/ dist/",
-    "server": "node dist/server.js",
-    "devServer": "tsx --watch src/server.ts"
-  },
-  "dependencies": {
-    "express": "^5.2.1"
+    "test": "cd backend && uv run pytest",
+    "lint": "cd backend && uv run ruff check . && cd ../client && npm run lint",
+    "build": "cd client/ && npm run build",
+    "server": "cd backend && ENVIRONMENT=production uv run backend",
+    "devServer": "cd backend && uv run backend",
+    "devClient": "cd client/ && npm run dev",
+    "devRun": "concurrently \"npm run devServer\" \"npm run devClient\""
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/express": "^5.0.6",
-    "eslint": "^10.9.1",
-    "globals": "^17.11.0",
-    "tsx": "^4.23.12",
-    "typescript-eslint": "^8.68.0"
+    "concurrently": "^10.0.5"
   }
 }
