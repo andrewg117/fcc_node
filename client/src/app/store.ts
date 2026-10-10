@@ -2,15 +2,17 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { serverApi } from "../features/server/serverApi";
 import { authApi } from "../features/auth/authApi";
+import { mediaApi } from "../features/media/mediaApi";
 import authReducer from "../features/auth/authSlice";
 
 export const store = configureStore({
   reducer: {
     [serverApi.reducerPath]: serverApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
+    [mediaApi.reducerPath]: mediaApi.reducer,
     auth: authReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(serverApi.middleware, authApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(serverApi.middleware, authApi.middleware, mediaApi.middleware),
 });
 
 setupListeners(store.dispatch);
